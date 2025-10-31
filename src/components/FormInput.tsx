@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { UseFormRegister, FieldErrors, RegisterOptions } from "react-hook-form";
 
 interface FormInputProps {
   id: string;
@@ -10,6 +10,8 @@ interface FormInputProps {
   errors: FieldErrors<any>;
   helperText: string;
   className?: string;
+  rows?: number;
+  validation?: RegisterOptions;
 }
 
 export default function FormInput({
@@ -20,7 +22,9 @@ export default function FormInput({
   register,
   errors,
   helperText,
-  className = "mb-4"
+  className = "mb-4",
+  rows = 4,
+  validation,
 }: FormInputProps) {
   const error = errors[id];
 
@@ -29,15 +33,23 @@ export default function FormInput({
       <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor={id}>
         {label}
       </label>
-      <input
-        className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${
-          error ? 'border-red-500' : ''
-        }`}
-        id={id}
-        type={type}
-        placeholder={placeholder}
-        {...register(id)}
-      />
+      {type === 'textarea' ? (
+        <textarea
+          className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${error ? 'border-red-500' : ''}`}
+          id={id}
+          placeholder={placeholder}
+          rows={rows}
+          {...register(id, validation)}
+        />
+      ) : (
+        <input
+          className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${error ? 'border-red-500' : ''}`}
+          id={id}
+          type={type}
+          placeholder={placeholder}
+          {...register(id, validation)}
+        />
+      )}
       {error && (
         <p className="text-red-500 text-xs italic mt-1">
           {error.message as string}

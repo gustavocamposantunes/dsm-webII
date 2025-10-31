@@ -1,0 +1,41 @@
+{
+  "header": {
+    "title": "My Application",
+    "links": {
+      "home": "Home",
+      "products": "Products",
+      "registerProduct": "Register Product"
+    },
+    "language": "Language",
+    "ptBR": "Portuguese (Brazil)",
+    "en": "English"
+  },
+  "pages": {
+    "products": {
+      "title": "Products",
+      "alterCta": "Alter"
+    },
+    "registerProduct": {
+      "title": "Register Product Page"
+    },
+    "alterProduct": {
+      "title": "Alter Product"
+    },
+    "login": {
+      "title": "Login Page",
+      "submit": "Sign In",
+      "username": "Username",
+      "password": "Password"
+    }
+  },
+  "forms": {
+    "product": {
+      "productName": "Product Name",
+      "price": "Price",
+      "description": "Description",
+      "category": "Category",
+      "save": "Save",
+      "cancel": "Cancel"
+    }
+  }
+}

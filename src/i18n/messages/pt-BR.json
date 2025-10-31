@@ -1,0 +1,41 @@
+{
+  "header": {
+    "title": "Minha Aplicação",
+    "links": {
+      "home": "Início",
+      "products": "Produtos",
+      "registerProduct": "Cadastrar Produto"
+    },
+    "language": "Idioma",
+    "ptBR": "Português (Brasil)",
+    "en": "Inglês"
+  },
+  "pages": {
+    "products": {
+      "title": "Produtos",
+      "alterCta": "Editar"
+    },
+    "registerProduct": {
+      "title": "Página de Cadastro de Produto"
+    },
+    "alterProduct": {
+      "title": "Editar Produto"
+    },
+    "login": {
+      "title": "Página de Login",
+      "submit": "Entrar",
+      "username": "Usuário",
+      "password": "Senha"
+    }
+  },
+  "forms": {
+    "product": {
+      "productName": "Nome do Produto",
+      "price": "Preço",
+      "description": "Descrição",
+      "category": "Categoria",
+      "save": "Salvar",
+      "cancel": "Cancelar"
+    }
+  }
+}
