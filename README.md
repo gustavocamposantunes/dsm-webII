@@ -41,13 +41,91 @@ pnpm start
 pnpm lint
 ```
 
-## Exemplos comparativos
+## Exemplos comparativos (Formik/Yup vs RHF/Zod)
 
-Documentação com exemplos comparativos (Formik+Yup vs React Hook Form+Zod):
+Os exemplos abaixo mostram a mesma ideia de formulário (nome e preço) implementada com as duas stacks. Estes snippets são ilustrativos; para rodar o exemplo Formik localmente será necessário instalar `formik` e `yup` (não são dependências padrão do projeto).
 
-- `docs/formik-vs-rhf.md`
+### Exemplo: Formik + Yup
 
-O arquivo traz snippets lado a lado, notas de migração e instruções de dependências.
+```tsx
+import React from 'react'
+import { Formik, Form, Field, ErrorMessage } from 'formik'
+import * as Yup from 'yup'
+
+const ProductSchema = Yup.object({
+  name: Yup.string().required('Nome obrigatório'),
+  price: Yup.number()
+    .typeError('Deve ser um número')
+    .positive('Deve ser > 0')
+    .required('Preço obrigatório'),
+})
+
+export function ExampleFormikYup({ onSubmit }) {
+  const initialValues = { name: '', price: '' }
+  return (
+    <Formik initialValues={initialValues} validationSchema={ProductSchema} onSubmit={onSubmit}>
+      <Form>
+        <label>Nome</label>
+        <Field name="name" />
+        <ErrorMessage name="name" component="div" />
+
+        <label>Preço</label>
+        <Field name="price" />
+        <ErrorMessage name="price" component="div" />
+
+        <button type="submit">Salvar</button>
+      </Form>
+    </Formik>
+  )
+}
+```
+
+Dependências opcionais para este exemplo:
+
+```bash
+pnpm add formik yup
+```
+
+### Exemplo: React Hook Form + Zod
+
+```tsx
+import React from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+
+const ProductSchema = z.object({
+  name: z.string().nonempty('Nome obrigatório'),
+  price: z.preprocess((val) => Number(val), z.number().positive('Deve ser > 0')),
+})
+
+type ProductFormData = z.infer<typeof ProductSchema>
+
+export function ExampleRHFZod({ onSubmit }) {
+  const { register, handleSubmit, formState: { errors } } = useForm<ProductFormData>({
+    resolver: zodResolver(ProductSchema),
+    defaultValues: { name: '', price: '' } as unknown as ProductFormData,
+  })
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <label>Nome</label>
+      <input {...register('name')} />
+      {errors.name && <div>{errors.name.message}</div>}
+
+      <label>Preço</label>
+      <input {...register('price')} />
+      {errors.price && <div>{errors.price.message}</div>}
+
+      <button type="submit">Salvar</button>
+    </form>
+  )
+}
+```
+
+Dependências já presentes no projeto: `react-hook-form`, `zod`, `@hookform/resolvers`.
+
+Mais exemplos comparativos com notas de migração estão em `docs/formik-vs-rhf.md`.
 
 ## Principais bibliotecas e stack
 
@@ -72,7 +150,7 @@ Consulte `package.json` para a lista completa de dependências.
 
 - `react-hook-form` + `zod` fornece tipagem forte e integração direta com validação por schema.
 - Exemplos em aula com `formik` + `yup` podem diferir na API, mas os conceitos de validação/feedback são equivalentes.
-- Posso transformar os snippets de `docs/formik-vs-rhf.md` em componentes executáveis dentro de `src/components/examples/` se você quiser.
+- Se quiser, posso mover estes exemplos para `src/components/examples/` para execução direta na aplicação.
 
 ## Contribuição
 
@@ -86,96 +164,7 @@ Material de estudo. PRs e sugestões são bem-vindas — abra uma issue para pro
 
 ---
 
-README limpo e único (em português).
-# Projeto: dsm-webII (Acompanhamento de Desenvolvimento Web II)
-
-> Projeto de estudo para a disciplina "Desenvolvimento Web II". Esta cópia do projeto foi adaptada para usar `react-hook-form` + `zod` em substituição a `formik` + `yup` (usados pelo professor). O objetivo é acompanhar os conceitos da matéria aplicando uma alternativa para formulários e validação.
-
-## Como executar (rápido)
-
-Instale dependências e execute em modo de desenvolvimento:
-
-```bash
-pnpm install
-pnpm dev
-```
-
-Ou com npm/yarn:
-
-```bash
-npm install
-npm run dev
-# ou
-yarn
-yarn dev
-```
-
-Abra http://localhost:3000 no navegador.
-
-## Scripts (descrição)
-
-Os scripts definidos em `package.json`:
-
-- `dev` — inicia o servidor de desenvolvimento (executa `next dev --turbopack` neste projeto).
-- `build` — gera o build de produção (`next build --turbopack`).
-- `start` — inicia o app em modo produção (`next start`, use após `build`).
-- `lint` — executa o ESLint configurado no projeto (`eslint`).
-
-Exemplo com pnpm:
-
-```bash
-pnpm dev
-pnpm build
-pnpm start
-pnpm lint
-```
-
-## Exemplos comparativos
-
-Há um documento com exemplos comparativos (Formik+Yup vs React Hook Form+Zod):
-
-- `docs/formik-vs-rhf.md`
-
-O arquivo contém snippets lado a lado, notas de migração e instruções de dependências para executar cada exemplo.
-
-## Principais bibliotecas e stack
-
-- Next.js
-- React
-- TypeScript
-- react-hook-form
-- zod
-- pnpm (gerenciador de pacotes usado aqui)
-
-Consulte `package.json` para a lista completa de dependências.
-
-## Estrutura relevante do projeto
-
-- `src/app/` — rotas e páginas (Next.js App Router)
-- `src/components/` — componentes reutilizáveis
-- `src/schemas/` — schemas Zod (ex.: `registerProductSchema.ts`)
-- `src/app/api/` — rotas API (ex.: `app/api/products`)
-- `src/lib/` — utilitários (ex.: `mockStore.ts`)
-
-## Observações
-
-- A combinação `react-hook-form` + `zod` oferece tipagem forte e integração simples com validação por schema.
-- Como o professor usa `formik` + `yup`, os exemplos das aulas podem diferir na API, mas os conceitos (validação, envio, feedback) são equivalentes.
-- Se desejar, posso transformar os snippets de `docs/formik-vs-rhf.md` em componentes reais dentro de `src/components/examples/` para execução direta.
-
-## Contribuição
-
-Este repositório é material de estudo. PRs e sugestões são bem-vindas — abra uma issue para algo grande.
-
-## Referências rápidas
-
-- Next.js: https://nextjs.org
-- react-hook-form: https://react-hook-form.com
-- zod: https://github.com/colinhacks/zod
-
----
-
-README limpo e único (em português).  
+README em português, com exemplos comparativos e scripts documentados.
 # Projeto: dsm-webII (Acompanhamento de Desenvolvimento Web II)
 
 Este é um projeto Next.js criado com `create-next-app` e adaptado como um projeto alternativo para acompanhar a disciplina "Desenvolvimento Web II".
