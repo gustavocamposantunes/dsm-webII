@@ -1,6 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import Link from "next/link";
 import FormInput from "@/components/FormInput";
 
 export type Product = {
@@ -84,14 +85,13 @@ export default function EditProductForm({ product }: { product: Product }) {
         helperText="Product category"
         validation={{ required: "Category is required" }}
       />
-
       <div className="mt-4 flex items-center gap-3">
         <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
           Save
         </button>
-        <a href="/products" className="text-gray-600 hover:underline">
+        <Link href="/products" className="text-gray-600 hover:underline">
           Cancel
-        </a>
+        </Link>
       </div>
     </form>
   );
