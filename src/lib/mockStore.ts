@@ -42,3 +42,17 @@ export function updateProduct(id: string, patch: Partial<Omit<Product, 'id'>>): 
   g.__MOCK_PRODUCTS__![idx] = updated;
   return updated;
 }
+
+export function addProduct(input: Omit<Product, 'id' | 'imageUrl'> & Partial<Pick<Product, 'imageUrl'>>): Product {
+  seedIfNeeded();
+  const newProduct: Product = {
+    id: faker.string.uuid(),
+    productName: input.productName,
+    price: input.price,
+    description: input.description,
+    category: input.category,
+    imageUrl: input.imageUrl ?? faker.image.urlPicsumPhotos({ width: 400, height: 300 }),
+  };
+  g.__MOCK_PRODUCTS__!.unshift(newProduct);
+  return newProduct;
+}

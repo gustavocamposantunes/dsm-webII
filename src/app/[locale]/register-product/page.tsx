@@ -28,9 +28,24 @@ export default function RegisterProductPage() {
         mode: "onBlur",
     });
 
-    const onSubmit = (data: ProductForm) => {
-        console.log("Submitted:", data);
-        alert("Product registered!\n" + JSON.stringify(data, null, 2));
+    const onSubmit = async (data: ProductForm) => {
+        try {
+            const res = await fetch('/api/products', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+            const json = await res.json();
+            if (!res.ok) {
+                console.error('Failed to register product', json);
+                alert('Erro ao registrar produto. Verifique os campos e tente novamente.');
+                return;
+            }
+            alert('Produto registrado com sucesso!\n' + JSON.stringify(json.item, null, 2));
+        } catch (err) {
+            console.error(err);
+            alert('Falha de rede ao registrar produto.');
+        }
     };
 
     return (
